@@ -1,0 +1,6 @@
+pydantic
+pydantic_settings
+uvicorn
+fastapi
+sqlalchemy
+psycopg2
