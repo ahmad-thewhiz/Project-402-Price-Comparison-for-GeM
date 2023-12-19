@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Price Comparison</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="productInput" placeholder="Enter Product Name">
+        <button id="searchButton">Search</button>
+    </div>
+    <div class="cards-container">
+        <div class="card" id="gemPriceCard"><h2>GEM</h2></div>
+        <div class="card" id="indiamartPriceCard"><h2>IndiaMart</h2></div>
+        <div class="card" id="amazonPriceCard"><h2>Amazon</h2></div>
+        <div class="card" id="flipkartPriceCard"><h2>Flipkart</h2></div>
+    </div>
+    <div class="chat-module">
+        <textarea id="chatInput" placeholder="Enter your query here..."></textarea>
+        <button id="chatSubmit">Send</button>
+        <div id="chatResponse"></div>
+        <button id="increaseSize">+</button>
+        <button id="decreaseSize">-</button>
+    </div>
+    <script src="./scripts.js"></script>
+</body>
+</html>
