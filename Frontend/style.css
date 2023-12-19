@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.search-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#productInput {
+    width: 300px;
+    padding: 10px;
+}
+
+#searchButton {
+    padding: 10px;
+}
+
+.cards-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+    width: 250px;
+    min-height: 150px;
+}
+
+.card h2 {
+    text-align: center;
+}
+
+/* Additional styling can be added as needed */
+
+/* Add this to your CSS file */
+/* -------------------------------------------------------------------------- */
+.chat-module {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+#chatInput {
+    width: 200px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+#chatResponse {
+    margin-top: 10px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+#increaseSize, #decreaseSize {
+    padding: 5px 10px;
+    margin-top: 10px;
+}
+
+/* Optional: Style to make the buttons appear side by side */
+#increaseSize, #decreaseSize {
+    display: inline-block;
+}
