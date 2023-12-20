@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Price Comparison</title>
+    <link rel="stylesheet" href="compare.css">
+</head>
+<body>
+    <div class="screen">
+        <div class="header"> 
+            <div class="logo-container">
+                <img src="WhatsApp Image 2023-12-20 at 07.07.09_20244623.jpg" alt="Logo" class="logo">
+            </div>
+            
+            <div class="search-container">
+                <input type="text" id="productInput" placeholder="Enter Product Name">
+                <button id="searchButton">Search</button>
+            </div>
+        </div>
+        <div class="rect">
+            <div class="rectangle">
+                <div class="sub-rectangle1">GeM-Marketplace</div>
+                <div class="sub-rect-container">
+                    <div class="sub-rect" id="gemPriceDisplay1"></div>
+                    <div class="sub-rect" id="gemPriceDisplay2"></div>
+                    <div class="sub-rect" id="gemPriceDisplay3"></div>
+                </div>
+            </div>
+
+            <div class="rectangle2">
+                <div class="sub-rectangle2">India-MART</div>
+                <div class="sub-rect-container2">
+                    <div class="sub-rect2" id="indiamartPriceDisplay1"></div>
+                    <div class="sub-rect2" id="indiamartPriceDisplay2"></div>
+                    <div class="sub-rect2" id="indiamartPriceDisplay3"></div>
+                </div>
+            </div>
+
+            <div class="rectangle">
+                <div class="sub-rectangle1">Amazon</div>
+                <div class="sub-rect-container">
+                    <div class="sub-rect" id="amazonPriceDisplay1"></div>
+                    <div class="sub-rect" id="amazonPriceDisplay2"></div>
+                    <div class="sub-rect" id="amazonPriceDisplay3"></div>
+                </div>
+            </div>
+
+            <div class="rectangle2">
+                <div class="sub-rectangle2">Flipkart</div>
+                <div class="sub-rect-container2">
+                    <div class="sub-rect2" id="flipkartPriceDisplay1"></div>
+                    <div class="sub-rect2" id="flipkartPriceDisplay2"></div>
+                    <div class="sub-rect2" id="flipkartPriceDisplay3"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2023 GeMWatch Bharat All rights reserved
+        </div>
+
+        <div class="chat-module">
+            <textarea id="chatInput" placeholder="Enter your query here..."></textarea>
+            <button id="chatSubmit">Send</button>
+            <div id="chatResponse"></div>
+            <button id="increaseSize">+</button>
+            <button id="decreaseSize">-</button>
+        </div>
+    </div>
+   
+    <script src="./compare.js"></script> <!-- Correct the script source link if necessary -->
+</body>
+</html>

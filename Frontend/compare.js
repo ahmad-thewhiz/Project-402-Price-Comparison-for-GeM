@@ -32,30 +32,61 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayData(source, data) {
-        let displayElement = document.getElementById(`${source}Display`);
-        if (displayElement) {
-            displayElement.innerHTML = ''; // Clear previous results
-            // Assuming data is an array of objects
-            data.forEach(item => {
-                displayElement.innerHTML += `<p>Price: ${item.productPrice}<br/>Rating: ${item.rating}</p>`;
+        if (Array.isArray(data)) {
+            // Handle data as an array
+            data.forEach((item, index) => {
+                let card = document.getElementById(`${source}Display${index + 1}`);
+                if (card) {
+                    updateCardContent(source, card, item);
+                }
             });
+        } else {
+            // Handle data as a single object
+            let card = document.getElementById(`${source}Display1`);
+            if (card) {
+                updateCardContent(source, card, data);
+            }
         }
     }
-
-    // function displayData(source, data) {
-    //     let card = document.getElementById(`${source}Card`);
-    //     console.log(card);
-    //     card.innerHTML = `<h2>${source.replace('Price', '')}</h2>`; // Reset card and add title
-
+    
+    // function updateCardContent(source, card, item) {
     //     // Custom formatting for each source
-    //     if (source === 'amazonPrice') {
-    //         data.forEach(item => {
-    //             card.innerHTML += `<p>Title: ${item.Title}<br>Price: ${item.Price}<br>Rating: ${item.Rating}</p>`;
-    //         });
+    //     if (source === 'amazonPrice' || source === 'flipkartPrice') {
+    //         card.innerHTML = `<p>Title: ${item.Title || item.productName}<br>Price: ${item.Price || item.productPrice || item.lowestPrice}<br>Rating: ${item.Rating || 'N/A'}</p>`;
     //     } else {
-    //         card.innerHTML += `<p>Product Name: ${data.productName}<br>Price: ${data.productPrice || data.lowestPrice}</p>`;
+    //         card.innerHTML = `<p>Product Name: ${item.productName}<br>Price: ${item.productPrice || item.lowestPrice}</p>`;
     //     }
     // }
+    
+    function updateCardContent(source, card, item) {
+        let contentHtml = '';
+    
+        // Include image if available
+        let imageUrlHtml = item.ImgURL ? `<img src="${item.ImgURL}" alt="${item.Title}" style="max-width: 100%; max-height: 200px;"><br>` : '';
+        contentHtml += imageUrlHtml;
+    
+        // Common details
+        contentHtml += `<p>Name: ${item.Title || item.productName}</p>`;
+        contentHtml += `<p>Price: ${item.Price || item.productPrice || item.lowestPrice}</p>`;
+        contentHtml += `<p>Rating: ${item.Rating || 'N/A'}</p>`;
+    
+        // Include a button for Amazon products if a URL is provided
+        if (source === 'amazonPrice' && item.URL) {
+            contentHtml += `<a href="${item.URL}" target="_blank" class="product-link-button">View Product</a>`;
+        }
+    
+        // Include a button for Flipkart products if a URL is provided
+        if (source === 'flipkartPrice' && item.URL) {
+            contentHtml += `<a href="${item.URL}" target="_blank" class="product-link-button">View Product</a>`;
+        }
+    
+        // Set the innerHTML of the card
+        card.innerHTML = contentHtml;
+    }
+    
+    
+    
+    
 
     document.getElementById('chatSubmit').addEventListener('click', function() {
         let message = document.getElementById('chatInput').value;
