@@ -61,21 +61,23 @@ class AmazonPrice(BaseModel):
     Price: float
     Rating: float
     URL: str
+    ImgURL: str
     
 class FlipkartPrice(BaseModel):
     productName: str
     productPrice: str
-    productReview: str
+    productURL: str
     
 class IndiamartPrice(BaseModel):
     productName: str
     productURL: str
     productPrice: str
-    
+
 class GeMPrice(BaseModel):
     productName: str
     brandName: str
     lowestPrice: float
+    imageURL: str
     
 class chatbotInput(BaseModel):
     message: str

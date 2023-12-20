@@ -8,6 +8,7 @@ import models, schemas, crud # import the files
 from database import engine, SessionLocal # import d functions
 import openai
 from gemScrapper import driverFunc
+from flipkart import flipkart_price
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -137,9 +138,9 @@ async def amazon_product(product_name:str):
         json=payload,
     )
 
-    sponsored_dict = {'Title': '', 'URL': '', 'Price': float('inf'), 'Rating': ''}
-    organic_dict = {'Title': '', 'URL': '', 'Price': float('inf'), 'Rating': ''}
-    amazons_choices_dict = {'Title': '', 'URL': '', 'Price': float('inf'), 'Rating': ''}
+    sponsored_dict = {'Title': '', 'URL': '', 'Price': float('inf'), 'Rating': '', 'ImgURL': ''}
+    organic_dict = {'Title': '', 'URL': '', 'Price': float('inf'), 'Rating': '', 'ImgURL': ''}
+    amazons_choices_dict = {'Title': '', 'URL': '', 'Price': float('inf'), 'Rating': '', 'ImgURL': ''}
 
     output = response.json()
 
@@ -149,6 +150,7 @@ async def amazon_product(product_name:str):
             sponsored_dict['Title'] = item['title']
             sponsored_dict['URL'] = item['url']
             sponsored_dict['Rating'] = item['rating']
+            sponsored_dict['ImgURL'] = item['url_image']
 
     for item2 in output['results'][0]['content']['results']['organic']:
         if item2['price'] < organic_dict['Price'] and product_name.split(' ')[0] in item2['title'] and item2['price'] != 0:
@@ -156,6 +158,7 @@ async def amazon_product(product_name:str):
             organic_dict['Title'] = item2['title']
             organic_dict['URL'] = item2['url']
             organic_dict['Rating'] = item2['rating']
+            organic_dict['ImgURL'] = item2['url_image']
 
     for item in output['results'][0]['content']['results']['amazons_choices']:
         if item['price'] < amazons_choices_dict['Price'] and product_name.split(' ')[0] in item['title'] and item['price'] != 0:
@@ -163,6 +166,7 @@ async def amazon_product(product_name:str):
             amazons_choices_dict['Title'] = item['title']
             amazons_choices_dict['URL'] = item['url']
             amazons_choices_dict['Rating'] = item['rating']
+            amazons_choices_dict['ImgURL'] = item['url_image']
 
     if organic_dict['Price'] != float('inf'):
         output_list.append(organic_dict)
@@ -176,71 +180,79 @@ async def amazon_product(product_name:str):
     return output_list
 
 @app.post("/flipkartPrice/{product_name}", response_model=schemas.FlipkartPrice)
-async def flipkart_product(product_name: str):
-    product_name = product_name.replace(' ', '+')
-    url = f"https://www.flipkart.com/search?q={product_name}"
-    response = requests.get(url)
+def search_product(product_name: str):
+    # product_name = product_name.replace(' ', '+')
+    # url = f"https://www.flipkart.com/search?q={product_name}"
+    # response = requests.get(url)
 
-    if response.status_code == 200 or 1:
-        page_content = response.content
-        soup = BeautifulSoup(page_content, 'html.parser')
-        product_links = soup.find_all("a", {"class": "_1fQZEK"}, limit=5)
-        product_urls = " "
-        i = 0
+    # if response.status_code == 200:
+    #     page_content = response.content
+    #     soup = BeautifulSoup(page_content, 'html.parser')
+    #     product_link = soup.find("a", {"class": "_1fQZEK"})
 
-        if product_links:
-            for i in range(5):
-                product_urls = ['https://www.flipkart.com' + link.get('href') for link in product_links]
-
-            # Get the details of the first product
-            response = requests.get(product_urls[0])
-            if response.status_code == 200:
-                page_content = response.content
-                soup = BeautifulSoup(page_content, 'html.parser')
-                product_name = soup.find("span", {"class": "B_NuCI"}).text
-                product_price = soup.find("div", {"class": "_30jeq3 _16Jk6d"}).text
-                product_review = soup.find("div", {"class": "_3LWZlK"}).text
-
-                output_details = {"productName": product_name, "productPrice": product_price, "productReview": product_review}
-                return output_details
-
-            else:
-                output_details = {"productName": "None1", "productPrice": "None", "productReview": "None"}
-                return output_details
-        else:
-            output_details = {"productName": "None2", "productPrice": "None", "productReview": "None"}
-            return output_details
-    else:
-        output_details = {"productName": "None3", "productPrice": "None", "productReview": "None"}
-        return output_details
+    #     if product_link:
+    #         product_url = 'https://www.flipkart.com' + product_link.get('href')
+            
+    #         # Get the details of the product
+    #         response = requests.get(product_url)
+    #         if response.status_code == 200:
+    #             page_content = response.content
+    #             soup = BeautifulSoup(page_content, 'html.parser')
+    #             product_name = soup.find("span", {"class": "B_NuCI"}).text
+    #             product_price = soup.find("div", {"class": "_30jeq3 _16Jk6d"}).text
+    #             product_review = soup.find("div", {"class": "_3LWZlK"}).text
+    #             output_details = {"productName": product_name, "productPrice": product_price, "productReview": product_review}
+    #             return output_details
+                
+    #         else:
+    #             output_details = {"productName": "NULL", "productPrice": "NULL", "productReview": "NULL"}
+    #             return output_details
+    #     else:
+    #         output_details = {"productName": "Product Not Found", "productPrice": "NULL", "productReview": "NULL"}
+    #         return output_details
+    # else:
+    output_details = flipkart_price(product_name)
+    # output_details = {"productName": "API Rate Limit Reached", "productPrice": "NULL", "productReview": "NULL"}
+    return output_details
     
     
     
-@app.post("/indiamartPrice/{product_name}", response_model=schemas.IndiamartPrice)
-def indiaMart_product(product_name):
+@app.post("/indiamartPrice/{product_name}", response_model=List[schemas.IndiamartPrice])
+def india_product(product_name):
+    output_details = []
     search_query = product_name + ' indiamart'
     google_url = "https://www.google.com/search?q=" + search_query
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     response = requests.get(google_url, headers={'User-Agent': user_agent})
-    soup = BeautifulSoup(response.text, 'html.parser')
-    span_tag = soup.find('span', attrs={'jscontroller': 'msmzHf'})
-    href = span_tag.find('a', attrs={'jsname': 'UWckNb'}).get('href') if span_tag else None
-    
-    if(href[:25]=="https://www.indiamart.com"):
+    soup = BeautifulSoup(response.text, 'lxml')
+    div_tags = soup.find_all('div', attrs={'class': 'MjjYud'})
+
+    hrefs = []
+    for div_tag in div_tags[:3]:
+        a_tag = div_tag.find('a', attrs={'jsname': 'UWckNb'})
+        if a_tag and 'href' in a_tag.attrs:  # Check if 'a' tag exists and has 'href' attribute
+            href = a_tag.get('href')
+            if href and href.startswith("https://www.indiamart.com"):
+                hrefs.append(href)
+
+    product_data = []
+    for href in hrefs:
         product_response = requests.get(href, headers={'User-Agent': user_agent})
-        product_soup = BeautifulSoup(product_response.text, 'html.parser')
+        product_soup = BeautifulSoup(product_response.text, 'lxml')
         product_name_tag = product_soup.find('h1', attrs={'class': 'bo center-heading'})
-        product_name = product_name_tag.text if product_name_tag else None
+        product_name = product_name_tag.text if product_name_tag else "None"
         price_tag = product_soup.find('span', attrs={'class': 'bo price-unit'})
-        price = price_tag.text if price_tag else None
-        output_details = {"productName": product_name, "productURL": href, "productPrice": price}
-        return output_details
-    else:
-        output_details = {"productName": None, "productURL": None, "productPrice": None}
-        return output_details
+        price = price_tag.text if price_tag else "None"
+        product_details = {
+            "productName": product_name,
+            "productURL": href,
+            "productPrice": price
+        }
+        output_details.append(product_details)
+
+    return output_details
     
-    
-@app.post("/gemPrice/{product_name}", response_model=schemas.GeMPrice)
+@app.post("/gemPrice/{product_name}", response_model=List[schemas.GeMPrice])
 def gem_product(product_name):
     output_details = driverFunc(product_name)
     return output_details
@@ -250,7 +262,7 @@ def chatbot(
     inpPrompt: schemas.chatbotInput):
     
 
-    openai.api_key = "sk-xxxxx"
+    openai.api_key = "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"
 
     messages = []
 

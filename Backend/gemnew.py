@@ -184,4 +184,4 @@ def driverFunc(product_name: str):
 
     return output_details
 
-# print(driverFunc("Gaming Laptop"))
+print(driverFunc("Gaming Laptop"))
