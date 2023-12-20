@@ -262,7 +262,7 @@ def chatbot(
     inpPrompt: schemas.chatbotInput):
     
 
-    openai.api_key = "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"
+    openai.api_key = "sk-xxxx"
 
     messages = []
 
